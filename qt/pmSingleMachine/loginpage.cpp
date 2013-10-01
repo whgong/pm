@@ -18,18 +18,17 @@ LoginPage::~LoginPage()
 
 void LoginPage::on_btnLogin_clicked()
 {
-//    QMessageBox mb;
-//    mb.setText("dubug:LoginPage::on_btnLogin_clicked in");
-//    mb.exec();
     UserDAO dao;
     std::string un = ui->edtUsernm->text().toStdString();
     std::string pwd = ui->edtPasswd->text().toStdString();
-//    if (1==1){
     if(dao.validUserByNamePasswd(un,pwd)){
         this->accept();
     }
-//    mb.setText("dubug:LoginPage::on_btnLogin_clicked out");
-//    mb.exec();
+    else {
+        QMessageBox mb;
+        mb.setText("用户名密码错误！！！");
+        mb.exec();
+    }
 }
 
 void LoginPage::on_btnCancel_clicked()

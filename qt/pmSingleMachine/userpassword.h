@@ -13,13 +13,13 @@ public:
     UserPassword(int objid,std::string objNm, std::string userNm, std::string passwd, std::string desc);
     long getObjId();
     std::string getObjName();
-    void setObjName(std::string *objnm);
+    void setObjName(std::string objnm);
     std::string getUserName();
-    void setUserName(std::string *usernm);
+    void setUserName(std::string usernm);
     std::string getPassword();
-    void setPassword(std::string *passwd);
+    void setPassword(std::string passwd);
     std::string getDecriptor();
-    void setDecriptor(std::string *desc);
+    void setDecriptor(std::string desc);
     std::string toString();
 
 private:

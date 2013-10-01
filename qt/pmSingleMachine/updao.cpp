@@ -1,13 +1,14 @@
 #include "updao.h"
 #include<QMessageBox>
-
+#include "utilconfig.h"
+//#include "globalvariable.h"
 
 pmsm::UPDao::UPDao()
 {
     QMessageBox mb;
     sqlite3 *db;
     int rc;
-    rc = sqlite3_open("D:/works/pm/qt/pmSingleMachine/pmSingleMachine.db",&db);
+    rc = sqlite3_open(UtilConfig::getConfValueByKey("sqlite_file_name").c_str(),&db);
     if(rc!=SQLITE_OK){
         mb.setText("资源库连接失败，请联系管理员！");
         mb.exec();

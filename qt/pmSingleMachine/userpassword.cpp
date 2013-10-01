@@ -56,20 +56,20 @@ std::string UserPassword::getDecriptor(){
     return this->decriptor;
 }
 
-void UserPassword::setObjName(std::string *objnm){
-    this->objName = objnm->data();
+void UserPassword::setObjName(std::string objnm){
+    this->objName = objnm;
 }
 
-void UserPassword::setUserName(std::string *usernm){
-    this->userName = usernm->data();
+void UserPassword::setUserName(std::string usernm){
+    this->userName = usernm;
 }
 
-void UserPassword::setPassword(std::string *passwd){
-    this->password = passwd->data();
+void UserPassword::setPassword(std::string passwd){
+    this->password = passwd;
 }
 
-void UserPassword::setDecriptor(std::string *desc){
-    this->decriptor = desc->data();
+void UserPassword::setDecriptor(std::string desc){
+    this->decriptor = desc;
 }
 
 std::string UserPassword::toString(){

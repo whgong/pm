@@ -2,13 +2,15 @@
 #include<string.h>
 #include<iostream>
 #include<QMessageBox>
+#include"utilconfig.h"
+//#include "globalvariable.h"
 
 UserDAO::UserDAO()
 {
     QMessageBox mb;
     sqlite3 *db;
     int rc;
-    rc = sqlite3_open("D:/works/pm/qt/pmSingleMachine/pmSingleMachine.db",&db);
+    rc = sqlite3_open(UtilConfig::getConfValueByKey("sqlite_file_name").c_str(),&db);
     if(rc!=SQLITE_OK){
         mb.setText("资源库连接失败，请联系管理员！");
         mb.exec();
@@ -59,7 +61,7 @@ bool UserDAO::validUserByNamePasswd(std::string nm, std::string pwd){
     r_un = (char *)sqlite3_column_text(ppStmt, 0);
     r_pwd = (char *)sqlite3_column_text(ppStmt, 1);
 
-    if(strcmp(nm.c_str(),r_un)==0&&strcmp(pwd.c_str(),r_pwd)==0)res=true;
+    if(r_un!=NULL&&r_pwd!=NULL)res=true;
     sqlite3_reset(ppStmt);
     sqlite3_finalize(ppStmt);
     return res;
