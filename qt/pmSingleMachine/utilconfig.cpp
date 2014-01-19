@@ -24,7 +24,7 @@ std::map<std::string, std::string> * UtilConfig::loadConfig(){
     try{
         res = new std::map<std::string, std::string>();
         if(res==NULL)throw -1;
-        ifs = new std::ifstream("D:\\works\\pm\\qt\\pmSingleMachine\\config.ini", std::ifstream::in);
+        ifs = new std::ifstream("config.ini", std::ifstream::in);
         if(ifs->good()!=true)throw -2;
 
         dealConfigFile(ifs,res);
