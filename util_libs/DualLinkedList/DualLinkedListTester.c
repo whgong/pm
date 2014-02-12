@@ -1,114 +1,135 @@
 //thisfile:DualLinkedListTester.c
 #include <stdio.h>
 
-#include "DualLinkedList.h"
+//#include "DualLinkedList.h"
+//#include"Object_WH_G.h"
+#include"List_WH_G.h"
 
-DLL_RET_CD PrintForeach(void *ctx, void *data); 
+void PrintForeachAction(void *val, RC_Iterator_WH_G *rc ,Object_WH_G * ctx);
 
 //main test
 //int main(int argc, char* argv[], char* env[]){
 int main(void){
+    RC_OBJ_WH_G orc = RC_OBJ_SUCCESS;
+    RC_LIST_WH_G lrc = RC_LIST_SUCCESS;
+    RC_Iterator_WH_G irc = RC_ITER_SUCCESS;
 
-    DLL_RET_CD rc = RC_DLL_SUCCESS;
+    List_WH_G *l = NULL;
 
-    printf("test in\n=============================\n");
-    DualLinkedList *lst;
-    printf("test:lst init\n");
-    lst = DuLkLst_getInstance(&rc);
-    if(rc==RC_DLL_SUCCESS){
-        printf("init list success!\n");
-        printf("test:lst=%p\n",lst);
-    }
+    Object_WH_G *tobj;
 
-
-    printf("test:append a element to lst\n");
-    lst->append(lst, &rc, (void *)'a');
-    printf("test:lst->data=%c\n",(char*)lst->get(lst, &rc, 1));
-    lst->append(lst, &rc, (void *)'f');
-    printf("test:lst->data=%c\n",(char*)lst->get(lst, &rc, 1));
-    printf("test:lst->data=%c\n",(char*)lst->get(lst, &rc, 2));
-    printf("test:lst->getLength=%d\n",lst->getLen(lst, &rc));
-    printf("test:insert 0...\n");
-    lst->insert(lst, &rc, 1, (void *)'0');
-    if(rc==RC_DLL_SUCCESS)
-        printf("test:insert 0 success!\n");
+    //create list
+    printf("create a list...\n");
+    l = List_WH_G_getInst(&lrc);
+    if(lrc==RC_LIST_SUCCESS)
+        printf("create a list success!\n");
     else
-        printf("test:insert 0 fail!\n");
-    //	lst->append(lst, (void *)'x');
-    printf("test:insert e...\n");
-    lst->insert(lst, &rc ,3, (void *)'e');
-    if(rc==RC_DLL_SUCCESS)
-        printf("test:insert 0 success!\n");
-    else
-        printf("test:insert 0 fail!\n");
-    printf("test:lst->getLength=%d\n",lst->getLen(lst, &rc));
-    printf("test:lst elem 1=%c\n",lst->get(lst, &rc, 1));
-    printf("test:lst elem 2=%c\n",lst->get(lst, &rc, 2));
-    printf("test:lst elem 3=%c\n",lst->get(lst, &rc, 3));
-    printf("test:lst elem 4=%c\n",lst->get(lst, &rc, 4));
+        printf("create a list fail!\n");
 
+    //apend a elem
+    printf("append a elem...\n");
+    tobj = Object_WH_G_getInst(&orc);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    tobj->op->set(tobj, &orc, (void *)100);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    l->lop->append(l, &lrc, tobj);
+    tobj = NULL;
+    if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
+    printf("append a elem 100\n");
 
-    printf("test:print all element of DualLinkedList.lst \n");
-    lst->for_each(lst, &rc, PrintForeach, (void*)"test");
-    //	lst->append(lst, (void *)'x');
+    printf("append a elem...\n");
+    tobj = Object_WH_G_getInst(&orc);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    tobj->op->set(tobj, &orc, (void *)101);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    l->lop->append(l, &lrc, tobj);
+    tobj = NULL;
+    if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
+    printf("append a elem 101\n");
 
-    printf("test:main:insert t\n");
-    lst->insert(lst, &rc,6, (void *)'t');
-    printf("test:lst->getLength=%d\n",lst->getLen(lst, &rc));
-    //	if(rc==RC_DLL_OUT_OF_RANG)printf("out of range\n");
-    printf("test:main:print all element of DualLinkedList.lst \n");
-    lst->for_each(lst, &rc, PrintForeach, (void*)"test");
+    printf("append a elem...\n");
+    tobj = Object_WH_G_getInst(&orc);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    tobj->op->set(tobj, &orc, (void *)102);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    l->lop->append(l, &lrc, tobj);
+    tobj = NULL;
+    if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
+    printf("append a elem 102\n");
 
-    printf("test:main:append x\n");
-    lst->append(lst, &rc, (void *)'x');
+    //for_each
+    printf("print all elem...\n");
+    l->itr->iop->for_each(l, &irc, PrintForeachAction, NULL);
+    if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
+    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
-    printf("test:print all element of DualLinkedList.lst \n");
-    lst->for_each(lst, &rc, PrintForeach, (void*)"test");
-
-    printf("test:main:remove a element of DualLinkedList.lst \n");
-    lst->remove(lst, &rc, 5);
-    printf("test:main:remove a element of DualLinkedList.lst \n");
-    lst->remove(lst, &rc, 3);
-    printf("test:main:remove a element of DualLinkedList.lst \n");
-    lst->remove(lst, &rc, 5);
-
-    printf("test:print all element of DualLinkedList.lst \n");
-    lst->for_each(lst, &rc, PrintForeach, (void*)"test");
-
-    printf("test:print all element of DualLinkedList.lst \n");
-    lst->toFirst(lst, &rc);
-    while(1){
-        printf("test:next = %c\n",lst->getC(lst, &rc));
-        lst->toNext(lst, &rc);
-        if(RC_DUALLINKEDLIST==RC_DLL_END_OF_LIST){
-            printf("test:the end of the list!\n");
-            break;
-        }
+    //反向遍历
+    printf("print all elem desc...\n");
+    irc = RC_ITER_SUCCESS;
+    while(irc == RC_ITER_SUCCESS){
+        tobj = l->itr->iop->current(l, &irc);
+        if(irc != RC_ITER_SUCCESS){printf("fail!\n");return 1;}
+        PrintForeachAction(tobj, &irc, NULL);
+        if(irc != RC_ITER_SUCCESS){printf("fail!\n");return 1;}
+        l->itr->iop->toPrior(l, &irc);
     }
+    if(irc==RC_ITER_HEAD_OF_LIST)printf("head of list!\n");
+    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
-    while(1){
-        printf("test:prior = %c\n",lst->getC(lst, &rc));
-        lst->toPrior(lst, &rc);
-        if(RC_DUALLINKEDLIST == RC_DLL_HEAD_OF_LIST){
-            printf("test:the head of the list!\n");
-            break;
-        }
-    }
+    //insert
+    printf("insert elem at index 2...\n");
+    tobj = Object_WH_G_getInst(&orc);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    tobj->op->set(tobj, &orc, (void *)106);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    l->lop->insert(l, &lrc, 2, tobj);
+    tobj = NULL;
+    if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
+    printf("insert a elem 106 at index 2\n");
+    //for_each
+    printf("print all elem...\n");
+    l->itr->iop->for_each(l, &irc, PrintForeachAction, NULL);
+    if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
+    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
-    printf("test:destory lst");
-    lst->destory(lst, &rc);
+    //update
+    printf("update elem at index 3...\n");
+    tobj = Object_WH_G_getInst(&orc);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    tobj->op->set(tobj, &orc, (void *)108);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    l->lop->update(l, &lrc, 3, tobj);
+    tobj = NULL;
+    if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
+    printf("update elem to 108 at index 3\n");
+    //for_each
+    printf("print all elem...\n");
+    l->itr->iop->for_each(l, &irc, PrintForeachAction, NULL);
+    if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
+    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
-    //printf("lst:%p\n",lst);
-    //printf("ret:%d\n",ret);
-    printf("=======================\ntest OUT\n");
+    //remove
+    printf("remove elem at index 1...\n");
+    l->lop->remove(l, &lrc, 1);
+    tobj = NULL;
+    if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
+    printf("remove elem at index 1\n");
+    //for_each
+    printf("print all elem...\n");
+    l->itr->iop->for_each(l, &irc, PrintForeachAction, NULL);
+    if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
+    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
+
+    l->obj.op->destory(l, &orc);
 
     return 0;
-
 }
 
-DLL_RET_CD PrintForeach(void *data, void *ctx){
-    //printf("DualLinkedList:test:start to print a element\n");
-    printf("data=%c\n",(char *)data);
-    //printf("DualLinkedList:test:end of print a element\n");
-    return RC_DLL_SUCCESS;
-} 
+void PrintForeachAction(void *val, RC_Iterator_WH_G *rc ,Object_WH_G * ctx){
+    *rc = RC_ITER_SUCCESS;
+    Object_WH_G *v = val;
+
+    printf("%d ", v->val);
+
+    return;
+}
