@@ -8,9 +8,9 @@ SOURCES += \
     DualLinkedList.c #\    ../BaseType/Object_WH_G.c
 
 HEADERS += \
-    DualLinkedList.h \
     Iterator_WH_G.h \
-    List_WH_G.h #\    ../BaseType/Object_WH_G.h
+    List_WH_G.h \ #\    ../BaseType/Object_WH_G.h
+    DualLinkedList.h
 
 
 unix|win32: LIBS += -L$$PWD/../../mclib/lib/ -llibObject_WH_G
