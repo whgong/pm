@@ -80,8 +80,7 @@ static void DuLkLst_toLast(Iter_WH_G *itr, int *rc);
 static void DuLkLst_toNext(Iter_WH_G *itr, int *rc);
 static void DuLkLst_toPrior(Iter_WH_G *itr, int *rc);
 static void DuLkLst_foreach(
-        List_WH_G *list,
-        int *rc,
+        List_WH_G *list, int *rc, unsigned char sort,
         void (*action)(Object_WH_G *val, int *rc ,void *ctx),
         void *ctx
         );
@@ -423,19 +422,19 @@ static void DuLkLst_Insert(List_WH_G *thiz, int *rc, long index, Object_WH_G *va
 
     CHECK_DLL_ISINITED(thiz, *rc, );
 
-    DLL_WH_G_Itr_Bind(&it, rc, thiz, 0);
-    CHECK_DLL_LISTDEAL_ERROR(*rc, , );
-
     len = thiz->lst_op->length(thiz, rc);
     CHECK_DLL_LISTDEAL_ERROR(*rc, , );
     if(index == len + 1){ //下标位置为列表末尾
         thiz->lst_op->append(thiz, rc, value);
         CHECK_DLL_LISTDEAL_ERROR(rc, , );
+        return;
     }
     else if(DuLkLst_isVaildIndex(thiz, rc, index) != 1){ //下标超出范围
         return;
     }
 
+    DLL_WH_G_Itr_Bind(&it, rc, thiz, 0);
+    CHECK_DLL_LISTDEAL_ERROR(*rc, , );
     DuLkLst_MoveToIndex(&it, rc, index, thiz);
     CHECK_DLL_LISTDEAL_ERROR(*rc, , );
 
@@ -621,6 +620,9 @@ static void DuLkLst_RemoveC(Iter_WH_G *itr, int *rc){
     c->data->obj_op->destory(c->data, &orc); //释放节点数据
     CHECK_DLL_OBJDEAL_ERROR(orc, *rc, , );
 
+    if(l->tail == itr->cur){
+        l->tail = l->tail->prior;
+    }
     itr->cur = c->prior; //itr前移一位
 
     c->prior->next = c->next; //断开前后节点
@@ -778,8 +780,7 @@ static void DuLkLst_toPrior(Iter_WH_G *itr, int *rc){
  *comment  : 1,遍历列表所有元素; 2,调用回调函数处理列表元素
 */
 static void DuLkLst_foreach(
-        List_WH_G *list,
-        int *rc,
+        List_WH_G *list, int *rc, unsigned char sort,
         void (*action)(Object_WH_G *val, int *rc ,void *ctx),
         void *ctx
         )
@@ -790,17 +791,33 @@ static void DuLkLst_foreach(
 
     CHECK_DLL_ISINITED(list, *rc, );
 
-    DLL_WH_G_Itr_Bind(&it, rc, list, 0);
-    CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
-
-    while(*rc == RC_LIST_SUCCESS){
-        o = it.itr_op->current(&it, rc);
+    if(sort == 0){
+        DLL_WH_G_Itr_Bind(&it, rc, list, 0);
         CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
 
-        action(o, rc, ctx);
+        while(*rc == RC_LIST_SUCCESS){
+            o = it.itr_op->current(&it, rc);
+            CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
+
+            action(o, rc, ctx);
+            CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
+
+            it.itr_op->toNext(&it, rc);
+        }
+    }
+    else {
+        DLL_WH_G_Itr_Bind(&it, rc, list, 1);
         CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
 
-        it.itr_op->toNext(&it, rc);
+        while(*rc == RC_LIST_SUCCESS){
+            o = it.itr_op->current(&it, rc);
+            CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
+
+            action(o, rc, ctx);
+            CHECK_DLL_LISTDEAL_ERROR(*rc, ,);
+
+            it.itr_op->toPrior(&it, rc);
+        }
     }
 
     return;

@@ -57,12 +57,6 @@ int main(void){
     if(lrc!=RC_LIST_SUCCESS){printf("fail!\n");return 1;}
     printf("append a elem 102\n");
 
-    //for_each
-    printf("print all elem...\n");
-    l->lst_op->for_each(l, &irc, PrintForeachAction, NULL);
-    if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
-    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
-
     //反向遍历
     DLL_WH_G_Itr_Bind(&it, &lrc, l, 1);
     printf("print all elem desc...\n");
@@ -89,7 +83,7 @@ int main(void){
     printf("insert a elem 106 at index 2\n");
     //for_each
     printf("print all elem...\n");
-    l->lst_op->for_each(l, &irc, PrintForeachAction, NULL);
+    l->lst_op->for_each(l, &irc, 0, PrintForeachAction, NULL);
     if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
     else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
@@ -105,7 +99,7 @@ int main(void){
     printf("update elem to 108 at index 3\n");
     //for_each
     printf("print all elem...\n");
-    l->lst_op->for_each(l, &irc, PrintForeachAction, NULL);
+    l->lst_op->for_each(l, &irc, 0, PrintForeachAction, NULL);
     if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
     else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
@@ -117,8 +111,23 @@ int main(void){
     printf("remove elem at index 1\n");
     //for_each
     printf("print all elem...\n");
-    l->lst_op->for_each(l, &irc, PrintForeachAction, NULL);
+    l->lst_op->for_each(l, &irc, 0, PrintForeachAction, NULL);
     if(irc==RC_ITER_END_OF_LIST)printf("end of list!\n");
+    else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
+
+
+    l->lst_op->remove(l, &lrc, 1);
+    l->lst_op->remove(l, &lrc, 1);
+    l->lst_op->remove(l, &lrc, 1);
+    tobj = Obj_WH_G_getInst(&orc);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    tobj->obj_op->set(tobj, &orc, (void *)100);
+    if(orc!=RC_OBJ_SUCCESS){printf("fail!\n");return 1;}
+    l->lst_op->insert(l, &lrc, 1, tobj);
+    //for_each
+    printf("print all elem...\n");
+    l->lst_op->for_each(l, &irc, 1, PrintForeachAction, NULL);
+    if(irc==RC_ITER_HEAD_OF_LIST||irc == RC_LIST_EMPTY)printf("head of list!\n");
     else if(irc!=RC_ITER_SUCCESS){printf("fail!\n");return 1;}
 
     //destory
