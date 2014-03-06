@@ -22,7 +22,7 @@ typedef struct __LIST_OP_13S13_163_COM_{ //list operator
     void (*remove)(void *thiz, int *rc, long index);
     Object_WH_G *(*findByIndex)(void *thiz, int *rc, long index);
     long (*length)(void *thiz, int *rc);
-    void (*for_each)(void *thiz, int *rc,
+    void (*for_each)(void *thiz, int *rc, unsigned char sort,
                      void (*action)(Object_WH_G *val, int *rc ,void *ctx),
                      void *ctx);
 } List_Op_WH_G;
